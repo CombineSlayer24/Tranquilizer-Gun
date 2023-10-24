@@ -102,6 +102,19 @@ if ( SERVER ) then
                 lambda:EmitSound( "lambdaplayers/weapons/tranqgun/vo_presleep" .. random( 7 ) .. ".mp3", 70, lambda:GetVoicePitch(), 1, CHAN_VOICE )
                 lambda:SimpleTimer( 0.1, function() lambda:StopCurrentVoiceLine() end )
 
+
+                if lambda.IsLambdaPlayer and random( 100 ) == 25 then
+                    local rndReact = random( 3 )
+                    if rndReact == 1 then
+                        lambda:PlaySoundFile( "death" )
+                    elseif rndReact == 2 then
+                        lambda:PlaySoundFile( "panic" )
+                    else
+                        lambda:PlaySoundFile( "pain" )
+                    end
+                end
+
+
                 if lambda.l_TranqGun_State == 0 then
                     lambda:DropWeapon()
                     lambda.l_TranqGun_State = 1
@@ -118,16 +131,18 @@ if ( SERVER ) then
                     lambda.loco:SetVelocity( vector_origin )
 
                     if lambda:IsOnGround() and preVel:Length() <= 300 then
-                        local downTime = lambda:SetSequence( "death_0" .. random( 4 ) )
-                        lambda:ResetSequenceInfo()
-                        lambda:SetCycle( 0 )
+                        if random( 2 ) == 1 then
+                            local downTime = lambda:SetSequence( "death_0" .. random( 4 ) )
+                            lambda:ResetSequenceInfo()
+                            lambda:SetCycle( 0 )
 
-                        local speed = Rand( 1.1, 1.33 )
-                        lambda:SetPlaybackRate( speed )
+                            local speed = Rand( 1.1, 1.33 )
+                            lambda:SetPlaybackRate( speed )
 
-                        downTime = ( CurTime() + ( ( downTime / speed ) * Rand( 0.66, 1 ) ) )
-                        while ( CurTime() < downTime and lambda.l_TranqGun_State == 1 ) do
-                            coroutine_yield()
+                            downTime = ( CurTime() + ( ( downTime / speed ) * Rand( 0.66, 1 ) ) )
+                            while ( CurTime() < downTime and lambda.l_TranqGun_State == 1 ) do
+                                coroutine_yield()
+                            end
                         end
                     end
                 end
